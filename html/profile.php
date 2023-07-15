@@ -1,3 +1,16 @@
+<?php
+  if (!empty($_GET['id']))
+  {
+    $id = $_GET['id'];
+  }else {
+    $id = 0;
+  }
+
+  $avatar = "";
+  $name = "";
+
+?>
+
 <html>
 <head>
 <title>W3.CSS Template</title>
@@ -122,15 +135,6 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       </div>
       <br>
 
-      <!-- Alert Box -->
-      <div class="w3-container w3-display-container w3-round w3-theme-l4 w3-border w3-theme-border w3-margin-bottom w3-hide-small">
-        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-theme-l3 w3-display-topright">
-          <i class="fa fa-remove"></i>
-        </span>
-        <p><strong>Hey!</strong></p>
-        <p>People are looking at your profile. Find out who.</p>
-      </div>
-
     <!-- End Left Column -->
     </div>
 
@@ -174,6 +178,21 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     	   }
     	}
 
+      function getProfile($get_profile,$mysqli)
+      {
+        if ($result = $mysqli->query($get_profile))
+      	{
+          while ($row = $result->fetch_object()){
+
+            global $id, $avatar, $name;
+            $avatar = "https://$row->avatar_link";
+            $name = "$row->forename $row->surname";
+            //get more data from query
+
+          }
+        }
+      }
+
       function runQuery($query_string,$mysqli) {
       //run the query
       	if ($result = $mysqli->query($query_string))
@@ -182,19 +201,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       	while ($row = $result->fetch_object()){
       	//item found from database
 
-        $name = "$row->forename  $row->surname";
-
         $strTimeAgo = "";
       	$strTimeAgo = timeago($row->timestamps);
 
-        //check if comments for post
+        global $id, $avatar, $name;
 
-        //ADD TIMER CALCULATION AND LIKE COUNT AND DELETE BUTTON FOR USER WHO MADE POST
+        //ADD DELETE BUTTON FOR USER WHO MADE POST
       	echo "<div class='w3-container w3-card w3-white w3-round w3-margin'><br>
-        <a href='profile.php?id=$row->user_id'>
-          <img src='https://$row->avatar_link' alt='Avatar' class='w3-left w3-circle w3-margin-right' style='width:60px'>
+          <img src='$avatar' alt='Avatar' class='w3-left w3-circle w3-margin-right' style='width:60px'>
           <span class='w3-right w3-opacity'>$strTimeAgo</span>
-          <h4> $name </h4><br></a>
+          <h4> $name </h4><br>
           <hr class='w3-clear'>
           <p> $row->characters </p>
           <button type='button' class='w3-button w3-theme-d1 w3-margin-bottom'><i class='fa fa-thumbs-up'> </i> $row->likes </button>
@@ -214,8 +230,10 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       	$mysqli->close();
       }
 
+      $get_profile = "SELECT * FROM `users` WHERE user_id = $id";
+      getProfile($get_profile,$mysqli);
 
-      $query_string = "SELECT * FROM `posts`,`users` WHERE posts.user_id = users.user_id ORDER BY post_id DESC";
+      $query_string = "SELECT * FROM `posts` WHERE user_id = $id ORDER BY post_id DESC";
   		runQuery($query_string,$mysqli);
       ?>
 
