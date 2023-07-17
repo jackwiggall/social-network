@@ -1,3 +1,15 @@
+<?php
+  session_start();
+  if (!empty($_SESSION['user_id']))
+  {
+    //user is logged in
+    $login = true;
+  }else {
+    //user not logged in
+    $login = false;
+  }
+?>
+
 <html>
 <head>
 <title>W3.CSS Template</title>
@@ -13,35 +25,9 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </head>
 <body class="w3-theme-l5">
 
-<!-- Navbar -->
-<div class="w3-top">
- <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
-  <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Logo</a>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Messages"><i class="fa fa-envelope"></i></a>
-  <div class="w3-dropdown-hover w3-hide-small">
-    <button class="w3-button w3-padding-large" title="Notifications"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">3</span></button>
-    <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
-      <a href="#" class="w3-bar-item w3-button">One new friend request</a>
-      <a href="#" class="w3-bar-item w3-button">John Doe posted on your wall</a>
-      <a href="#" class="w3-bar-item w3-button">Jane likes your post</a>
-    </div>
+  <div class="navbar">
+  <?php include 'navbar.php';?>
   </div>
-  <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="My Account">
-    <img src="https://www.w3schools.com/w3images/avatar2.png" class="w3-circle" style="height:23px;width:23px" alt="Avatar">
-  </a>
- </div>
-</div>
-
-<!-- Navbar on small screens -->
-<div id="navDemo" class="w3-bar-block w3-theme-d2 w3-hide w3-hide-large w3-hide-medium w3-large">
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large">My Profile</a>
-</div>
 
 <!-- Page Container -->
 <div class="w3-container w3-content" style="max-width:1400px;margin-top:80px">
@@ -137,6 +123,11 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <!-- Middle Column -->
     <div class="w3-col m7">
 
+      <?php
+
+      //user is logged in, allow to make posts
+      if ($login) {
+      echo '
       <div class="w3-row-padding">
         <div class="w3-col m12">
           <div class="w3-card w3-round w3-white">
@@ -150,9 +141,8 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             </div>
           </div>
         </div>
-      </div>
+      </div> '; }
 
-      <?php
 
       require('db_connection.php');
 
@@ -191,13 +181,13 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 
         //ADD TIMER CALCULATION AND LIKE COUNT AND DELETE BUTTON FOR USER WHO MADE POST
       	echo "<div class='w3-container w3-card w3-white w3-round w3-margin'><br>
-        <a href='profile.php?id=$row->user_id'>
+        <a href='profile.php?id=$row->user_id' style='text-decoration:none'>
           <img src='https://$row->avatar_link' alt='Avatar' class='w3-left w3-circle w3-margin-right' style='width:60px'>
           <span class='w3-right w3-opacity'>$strTimeAgo</span>
-          <h4> $name </h4><br></a>
+          <h4> $name <span class='w3-opacity'>#$row->user_id</span> </h4></a><br>
           <hr class='w3-clear'>
           <p> $row->characters </p>
-          <button type='button' class='w3-button w3-theme-d1 w3-margin-bottom'><i class='fa fa-thumbs-up'> </i> $row->likes </button>
+          <a href='likePost.php?post_id=$row->post_id'><button type='button' class='w3-button w3-theme-d1 w3-margin-bottom'><i class='fa fa-thumbs-up'> </i> $row->likes </button></a>
           <button type='button' class='w3-button w3-theme-d2 w3-margin-bottom'><i class='fa fa-comment'> </i> $row->likes </button>
         </div>";
 
@@ -271,14 +261,9 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 </div>
 <br>
 
-<!-- Footer -->
-<footer class="w3-container w3-theme-d3 w3-padding-16">
-  <h5>Footer</h5>
-</footer>
-
-<footer class="w3-container w3-theme-d5">
-  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-</footer>
+<div class="footer">
+<?php include 'footer.php';?>
+</div>
 
 <script>
 // Accordion
