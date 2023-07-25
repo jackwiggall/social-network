@@ -16,6 +16,7 @@
     }else {
       $profile = false;
     }
+    $_SESSION['user_id'] = $id; //set the current profile to id
   }else {
     //user not logged in
     $profile = false;
@@ -28,7 +29,7 @@
 
 <html>
 <head>
-<title>W3.CSS Template</title>
+<title>Social</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -205,7 +206,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           <h4> $name <span class='w3-opacity'>#$row->user_id</span> </h4></a><br>
           <hr class='w3-clear'>
           <p> $row->characters </p>
-          <a href='likePost.php?post_id=$row->post_id'><button type='button' class='w3-button w3-theme-d1 w3-margin-bottom'><i class='fa fa-thumbs-up'> </i> $row->likes </button></a>
+          <a href='likePost.php?post_id=$row->post_id+redirect=$row->user_id'><button type='button' class='w3-button w3-theme-d1 w3-margin-bottom'><i class='fa fa-thumbs-up'> </i> $row->likes </button></a>
           <button type='button' class='w3-button w3-theme-d2 w3-margin-bottom'><i class='fa fa-comment'> </i> $row->likes </button>
         </div>";
 
